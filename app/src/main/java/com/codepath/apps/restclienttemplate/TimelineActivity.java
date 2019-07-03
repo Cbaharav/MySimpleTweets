@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ProgressBar;
 
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -37,6 +39,7 @@ public class TimelineActivity extends AppCompatActivity {
     RecyclerView rvTweets;
     public static final int COMP_REQUEST_CODE = 20;
     private SwipeRefreshLayout swipeContainer;
+    MenuItem miActionProgressItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +82,7 @@ public class TimelineActivity extends AppCompatActivity {
         // send the network request to fetch the updated data
         // 'client' here is an instance of Android Async HTTP
         // getHomeTimeline is an example endpoint
+        showProgressBar();
         client.getHomeTimeline(new JsonHttpResponseHandler() {
 
             @Override
@@ -100,12 +104,14 @@ public class TimelineActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+                hideProgressBar();
                 // signal refresh has finished
                 swipeContainer.setRefreshing(false);
             }
 
             public void onFailure(Throwable throwable) {
                 Log.d("DEBUG", "Fetch timeline error: " + throwable.toString());
+                hideProgressBar();
             }
         });
     }
@@ -124,13 +130,29 @@ public class TimelineActivity extends AppCompatActivity {
         // inflate the menu; this adds items to the action bar if it is present
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
+        // store instance of the menu item containing progress
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+        // extract the action-view from the menu item
+        ProgressBar v = (ProgressBar) MenuItemCompat.getActionView(miActionProgressItem);
+
         // changing compose action to white
         MenuItem menuItem = menu.findItem(R.id.miCompose);
         if (menuItem != null) {
             tintMenuIcon(TimelineActivity.this, menuItem, android.R.color.white);
         }
 
-        return true;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // toggle visibility of progress bar
+    public void showProgressBar() {
+        // show progress item
+        miActionProgressItem.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        // hide progress item
+        miActionProgressItem.setVisible(false);
     }
 
     public void onComposeAction(MenuItem mi) {
@@ -163,6 +185,7 @@ public class TimelineActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 // iterate through the JSON array
                 // for each entry, deserialize the JSON object
+                showProgressBar();
                 for(int i = 0; i < response.length(); i++) {
                     // convert each object to a Tweet model
                     // add that Tweet model to our data source
@@ -176,6 +199,7 @@ public class TimelineActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
+                hideProgressBar();
             }
 
             @Override
