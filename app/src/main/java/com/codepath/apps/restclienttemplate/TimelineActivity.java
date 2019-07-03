@@ -2,10 +2,13 @@ package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.ColorRes;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -51,10 +54,16 @@ public class TimelineActivity extends AppCompatActivity {
         // set the adapter
         rvTweets.setAdapter(tweetAdapter);
 
+        // modifying the action bar, blue background and different title
+        ActionBar bar = getSupportActionBar();
+        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ff1da1f2")));
+        bar.setTitle("Twitter-ish");
+
         populateTimeline();
 
     }
 
+    // can be used to change the color of menu icons
     public static void tintMenuIcon(Context context, MenuItem item, @ColorRes int color) {
         Drawable normalDrawable = item.getIcon();
         Drawable wrapDrawable = DrawableCompat.wrap(normalDrawable);
@@ -65,33 +74,38 @@ public class TimelineActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //Inflate the menu; this adds items to the action bar if it is present
+        // inflate the menu; this adds items to the action bar if it is present
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem menuItem = menu.findItem(R.id.miCompose);
 
+        // changing compose action to white
+        MenuItem menuItem = menu.findItem(R.id.miCompose);
         if (menuItem != null) {
-            tintMenuIcon(TimelineActivity.this, menuItem, android.R.color.holo_blue_light);
+            tintMenuIcon(TimelineActivity.this, menuItem, android.R.color.white);
         }
 
         return true;
     }
 
     public void onComposeAction(MenuItem mi) {
+        // sending intent to compose activity class when compose action is clicked
         Intent i = new Intent(TimelineActivity.this, ComposeActivity.class);
         startActivityForResult(i, COMP_REQUEST_CODE);
 
     }
 
-    //handle results from compose action
+    // handle results from compose action
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //if the edit activity completed ok
+        // if the edit activity completed ok
         if(resultCode == RESULT_OK && requestCode == COMP_REQUEST_CODE) {
             //extract updated item text from result intent extras
             Tweet newTweet = (Tweet) Parcels.unwrap(data.getParcelableExtra(Tweet.class.getSimpleName()));
+            // add new tweet to top of array list
             tweets.add(0, newTweet);
+            // notify adapter of new tweet
             tweetAdapter.notifyItemInserted(0);
+            // move recycler view to top of page
             rvTweets.scrollToPosition(0);
         }
     }
@@ -100,10 +114,8 @@ public class TimelineActivity extends AppCompatActivity {
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                //Log.d("TwitterClient", response.toString());
                 // iterate through the JSON array
                 // for each entry, deserialize the JSON object
-
                 for(int i = 0; i < response.length(); i++) {
                     // convert each object to a Tweet model
                     // add that Tweet model to our data source
@@ -116,9 +128,7 @@ public class TimelineActivity extends AppCompatActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
                 }
-
             }
 
             @Override

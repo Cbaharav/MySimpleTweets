@@ -25,7 +25,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
     }
 
     // for each row, inflate the layout and cache references into ViewHolder
-
     @NonNull
     @Override
     public TweetAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
@@ -41,14 +40,16 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        //get the data according to position
+        // get the data according to position
         Tweet tweet = mTweets.get(position);
 
-        //populate the views according to position
+        // populate the views according to position
         viewHolder.tvUsername.setText(tweet.user.name);
         viewHolder.tvBody.setText(tweet.body);
         viewHolder.tvTime.setText(tweet.getRelativeTimeAgo(tweet.createdAt));
+        viewHolder.tvHandle.setText("@" + tweet.user.screenName);
 
+        // load user images
         Glide.with(context)
                 .load(tweet.user.profileImageUrl)
                 .into(viewHolder.ivProfileImage);
@@ -59,13 +60,13 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
         return mTweets.size();
     }
 
-    //create ViewHolder class
-
+    // create ViewHolder class
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView ivProfileImage;
         public TextView tvUsername;
         public TextView tvBody;
         public TextView tvTime;
+        public TextView tvHandle;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -75,6 +76,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
             tvUsername = (TextView) itemView.findViewById(R.id.tvUserName);
             tvBody = (TextView) itemView.findViewById(R.id.tvBody);
             tvTime = (TextView) itemView.findViewById(R.id.tvTime);
+            tvHandle = (TextView) itemView.findViewById(R.id.tvHandle);
         }
     }
 }
