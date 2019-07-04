@@ -1,22 +1,22 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Paint;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.request.RequestOptions;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         // get the data according to position
-        Tweet tweet = mTweets.get(position);
+        final Tweet tweet = mTweets.get(position);
 
         // populate the views according to position
         viewHolder.tvUsername.setText(tweet.user.name);
@@ -58,47 +58,21 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
         // load user images
         Glide.with(context)
                 .load(tweet.user.profileImageUrl)
-                .transform(new CircleTransform(context))
+                .apply(RequestOptions.circleCropTransform())
                 .into(viewHolder.ivProfileImage);
-    }
 
-    // courtesy of http://www.gadgetsaint.com/android/circular-images-glide-library-android/#.XR03f9NKiL8
-    // rounds edges
-    public class CircleTransform extends BitmapTransformation {
-        public CircleTransform(Context context) {
-            super(context);
-        }
-
-        @Override protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
-            return circleCrop(pool, toTransform);
-        }
-
-        private Bitmap circleCrop(BitmapPool pool, Bitmap source) {
-            if (source == null) return null;
-
-            int size = Math.min(source.getWidth(), source.getHeight());
-            int x = (source.getWidth() - size) / 2;
-            int y = (source.getHeight() - size) / 2;
-
-            Bitmap squared = Bitmap.createBitmap(source, x, y, size, size);
-
-            Bitmap result = pool.get(size, size, Bitmap.Config.ARGB_8888);
-            if (result == null) {
-                result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+        viewHolder.ivReply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, "Reply button clicked", Toast.LENGTH_LONG);
+                // create intent for the new activity
+                Intent i = new Intent(context, ReplyActivity.class);
+                // serialize the movie using parceler, use its short name as a key
+                i.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
+                // start activity
+                context.startActivity(i);
             }
-
-            Canvas canvas = new Canvas(result);
-            Paint paint = new Paint();
-            paint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
-            paint.setAntiAlias(true);
-            float r = size / 2f;
-            canvas.drawCircle(r, r, r, paint);
-            return result;
-        }
-
-        @Override public String getId() {
-            return getClass().getName();
-        }
+        });
     }
 
     @Override
@@ -107,13 +81,13 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
     }
 
     // create ViewHolder class
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView ivProfileImage;
         public TextView tvUsername;
         public TextView tvBody;
         public TextView tvTime;
         public TextView tvHandle;
-        public ImageView ivReply;
+        public ImageButton ivReply;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -124,8 +98,9 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
             tvBody = (TextView) itemView.findViewById(R.id.tvBody);
             tvTime = (TextView) itemView.findViewById(R.id.tvTime);
             tvHandle = (TextView) itemView.findViewById(R.id.tvHandle);
-            ivReply = (ImageView) itemView.findViewById(R.id.ivReply);
+            ivReply = (ImageButton) itemView.findViewById(R.id.ivReply);
         }
+
     }
 
     // helper methods for adapter to clear items from dataset or add items to it

@@ -61,4 +61,16 @@ public class TwitterClient extends OAuthBaseClient {
 		// define request method and make a call to the client
 		client.post(apiUrl, params, handler);
 	}
+
+	public void replyTweet(String message, long twitterId, AsyncHttpResponseHandler handler) {
+		// define the endpoint URL with getApiUrl and pass a relative path to the endpoint
+		String apiUrl = getApiUrl("statuses/update.json");
+		// define the parameters to pass to the request
+		RequestParams params = new RequestParams();
+		params.put("status", message);
+		params.put("in_reply_to_status_id", twitterId);
+		// define request method and make a call to the client
+		client.post(apiUrl, params, handler);
+	}
+
 }
