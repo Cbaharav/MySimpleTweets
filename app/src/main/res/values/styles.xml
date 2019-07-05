@@ -13,4 +13,13 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <style name="Theme.AppCompat.Transparent" parent="Theme.AppCompat.NoActionBar">
+        <item name = "android:background">#1D808080</item>
+        <item name = "android:windowNoTitle">true</item>
+        <item name = "android:windowBackground">@android:color/transparent</item>
+        <item name = "android:colorBackgroundCacheHint">@null</item>
+        <item name = "android:windowIsTranslucent">true</item>
+    </style>
+
+
 </resources>

@@ -46,6 +46,7 @@ public class TwitterClient extends OAuthBaseClient {
 		// Can specify query string params directly or through RequestParams.
 		RequestParams params = new RequestParams();
 		params.put("count", 25);
+		params.put("tweet_mode", "extended");
 		client.get(apiUrl, params, handler);
 	}
 
@@ -55,6 +56,7 @@ public class TwitterClient extends OAuthBaseClient {
 		params.put("count", 25);
 		// setting max_id to id before the oldest post (as max_id is inclusive)
 		params.put("max_id", oldest_id - 1);
+		params.put("tweet_mode", "extended");
 		client.get(apiUrl, params, handler);
 	}
 
@@ -65,6 +67,7 @@ public class TwitterClient extends OAuthBaseClient {
 		// define the parameters to pass to the request
 		RequestParams params = new RequestParams();
 		params.put("status", message);
+		params.put("tweet_mode", "extended");
 		// define request method and make a call to the client
 		client.post(apiUrl, params, handler);
 	}
@@ -76,6 +79,7 @@ public class TwitterClient extends OAuthBaseClient {
 		RequestParams params = new RequestParams();
 		params.put("status", message);
 		params.put("in_reply_to_status_id", twitterId);
+		params.put("tweet_mode", "extended");
 		// define request method and make a call to the client
 		client.post(apiUrl, params, handler);
 	}

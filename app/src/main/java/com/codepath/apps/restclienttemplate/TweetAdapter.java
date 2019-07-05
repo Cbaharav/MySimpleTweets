@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
     }
 
     //bind the values based on the position of the element
-
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         // get the data according to position
@@ -81,7 +81,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
     }
 
     // create ViewHolder class
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public ImageView ivProfileImage;
         public TextView tvUsername;
         public TextView tvBody;
@@ -99,6 +99,26 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
             tvTime = (TextView) itemView.findViewById(R.id.tvTime);
             tvHandle = (TextView) itemView.findViewById(R.id.tvHandle);
             ivReply = (ImageButton) itemView.findViewById(R.id.ivReply);
+            itemView.setOnClickListener(this);
+        }
+
+        //when user clicks on a row, show MovieDetailsActivity for the selected movie
+        @Override
+        public void onClick(View v) {
+            Log.d("Carmel", "item clicked");
+            //gets item position
+            int position = getAdapterPosition();
+            //make sure position is valid, actually exists in the view
+            if(position != RecyclerView.NO_POSITION) {
+                //get the movie at the position
+                Tweet tweet = mTweets.get(position);
+                //create intent for the new activity
+                Intent intent = new Intent(context, TweetDetailsActivity.class);
+                //serialize the movie using parceler, use its short name as a key
+                intent.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
+                //show activity
+                context.startActivity(intent);
+            }
         }
 
     }

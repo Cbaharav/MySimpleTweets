@@ -1,13 +1,9 @@
 package com.codepath.apps.restclienttemplate;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.ColorRes;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -44,6 +40,7 @@ public class TimelineActivity extends AppCompatActivity {
 
     // infinite pagination variables
     long oldest_id = 0;
+
     // Store a member variable for the listener
     private EndlessRecyclerViewScrollListener scrollListener;
 
@@ -179,14 +176,14 @@ public class TimelineActivity extends AppCompatActivity {
         });
     }
 
-    // can be used to change the color of menu icons
-    public static void tintMenuIcon(Context context, MenuItem item, @ColorRes int color) {
-        Drawable normalDrawable = item.getIcon();
-        Drawable wrapDrawable = DrawableCompat.wrap(normalDrawable);
-        DrawableCompat.setTint(wrapDrawable, context.getResources().getColor(color));
-
-        item.setIcon(wrapDrawable);
-    }
+//    // can be used to change the color of menu icons
+//    public static void tintMenuIcon(Context context, MenuItem item, @ColorRes int color) {
+//        Drawable normalDrawable = item.getIcon();
+//        Drawable wrapDrawable = DrawableCompat.wrap(normalDrawable);
+//        DrawableCompat.setTint(wrapDrawable, context.getResources().getColor(color));
+//
+//        item.setIcon(wrapDrawable);
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -198,11 +195,11 @@ public class TimelineActivity extends AppCompatActivity {
         // extract the action-view from the menu item
         ProgressBar v = (ProgressBar) MenuItemCompat.getActionView(miActionProgressItem);
 
-        // changing compose action to white
-        MenuItem menuItem = menu.findItem(R.id.miCompose);
-        if (menuItem != null) {
-            tintMenuIcon(TimelineActivity.this, menuItem, android.R.color.white);
-        }
+//        // changing compose action to white
+//        MenuItem menuItem = menu.findItem(R.id.miCompose);
+//        if (menuItem != null) {
+//            tintMenuIcon(TimelineActivity.this, menuItem, android.R.color.white);
+//        }
         return super.onCreateOptionsMenu(menu);
     }
 

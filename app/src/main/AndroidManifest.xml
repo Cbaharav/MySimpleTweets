@@ -15,6 +15,8 @@
         android:theme="@style/AppTheme">
         <activity android:name=".ComposeActivity"></activity>
         <activity android:name=".ReplyActivity"></activity>
+        <activity android:name=".TweetDetailsActivity"
+            android:theme="@style/Theme.AppCompat.Transparent"></activity>
         <activity android:name=".TimelineActivity" />
         <activity
             android:name=".LoginActivity"

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools">
     <item
         android:id="@+id/miCompose"
-        android:icon="@drawable/ic_vector_compose"
+        android:icon="@drawable/vector_compose_fab"
         app:showAsAction="ifRoom"
         android:title="Compose"
         android:tint="@color/twitter_blue"
