@@ -37,9 +37,15 @@ public class TimelineActivity extends AppCompatActivity {
     TweetAdapter tweetAdapter;
     ArrayList<Tweet> tweets;
     RecyclerView rvTweets;
-    public static final int COMP_REQUEST_CODE = 20;
-    private SwipeRefreshLayout swipeContainer;
-    MenuItem miActionProgressItem;
+
+    public static final int COMP_REQUEST_CODE = 20; // arbitrary request code for intent
+    private SwipeRefreshLayout swipeContainer; // for swipe to refresh
+    MenuItem miActionProgressItem; // indeterminate progress bar
+
+    // infinite pagination variables
+    long oldest_id = 0;
+    // Store a member variable for the listener
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +60,11 @@ public class TimelineActivity extends AppCompatActivity {
         tweets = new ArrayList<>();
         // construct the adapter from this data source
         tweetAdapter = new TweetAdapter(tweets);
+
+        // creating LinearLayout Manager object to reference later for scroll listener
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         // RecyclerView setup (layout manager, use adapter)
-        rvTweets.setLayoutManager(new LinearLayoutManager(this));
+        rvTweets.setLayoutManager(linearLayoutManager);
         // set the adapter
         rvTweets.setAdapter(tweetAdapter);
 
@@ -74,8 +83,62 @@ public class TimelineActivity extends AppCompatActivity {
         bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ff1da1f2")));
         bar.setTitle("Twitter-ish");
 
-        populateTimeline();
+        // creating scrollListener for infinite pagination
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                loadNextDataFromApi();
+            }
+        };
 
+        // Adds the scroll listener to RecyclerView
+        rvTweets.addOnScrollListener(scrollListener);
+
+        populateTimeline();
+    }
+
+    // Append the next page of data into the adapter
+    // This method probably sends out a network request and appends new data items to your adapter.
+    public void loadNextDataFromApi() {
+        // Send an API request to retrieve appropriate paginated data
+        client.loadNextDataFromApi(oldest_id, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                // iterate through the JSON array
+                // for each entry, deserialize the JSON object
+                showProgressBar();
+                for (int i = 0; i < response.length(); i++) {
+                    // convert each object to a Tweet model
+                    // add that Tweet model to our data source
+                    // notify the adapter that we've added an item
+                    try {
+                        Tweet tweet = Tweet.fromJSON(response.getJSONObject(i));
+                        tweets.add(tweet);
+                        tweetAdapter.notifyItemInserted(tweets.size() - 1);
+
+                        if (tweet.uid < oldest_id) {
+                            oldest_id = tweet.uid;
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                hideProgressBar();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d("TwitterClient", errorResponse.toString());
+                throwable.printStackTrace();
+            }
+        });
     }
 
     public void fetchTimelineAsync(int page) {
@@ -140,7 +203,6 @@ public class TimelineActivity extends AppCompatActivity {
         if (menuItem != null) {
             tintMenuIcon(TimelineActivity.this, menuItem, android.R.color.white);
         }
-
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -159,7 +221,6 @@ public class TimelineActivity extends AppCompatActivity {
         // sending intent to compose activity class when compose action is clicked
         Intent i = new Intent(TimelineActivity.this, ComposeActivity.class);
         startActivityForResult(i, COMP_REQUEST_CODE);
-
     }
 
     // handle results from compose action
@@ -179,8 +240,6 @@ public class TimelineActivity extends AppCompatActivity {
         }
     }
 
-
-
     private void populateTimeline() {
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
@@ -188,7 +247,7 @@ public class TimelineActivity extends AppCompatActivity {
                 // iterate through the JSON array
                 // for each entry, deserialize the JSON object
                 showProgressBar();
-                for(int i = 0; i < response.length(); i++) {
+                for (int i = 0; i < response.length(); i++) {
                     // convert each object to a Tweet model
                     // add that Tweet model to our data source
                     // notify the adapter that we've added an item
@@ -197,6 +256,14 @@ public class TimelineActivity extends AppCompatActivity {
                         Tweet tweet = Tweet.fromJSON(response.getJSONObject(i));
                         tweets.add(tweet);
                         tweetAdapter.notifyItemInserted(tweets.size() - 1);
+
+                        // comparing tweet id with the oldest_id, and updating if necessary
+                        if (i == 0) {
+                            oldest_id = tweet.uid;
+                        } else if (tweet.uid < oldest_id) {
+                            oldest_id = tweet.uid;
+                        }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
