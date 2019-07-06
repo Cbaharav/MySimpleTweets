@@ -84,4 +84,18 @@ public class TwitterClient extends OAuthBaseClient {
 		client.post(apiUrl, params, handler);
 	}
 
+	public void likeTweet(boolean like, long twitterId, AsyncHttpResponseHandler handler) {
+		// define the endpoint URL with getApiUrl and pass a relative path to the endpoint
+		String apiUrl = getApiUrl("favorites/create.json");
+		// the message has already been liked
+		if (like) {
+			apiUrl = getApiUrl("favorites/destroy.json");
+		}
+		// define the parameters to pass to the request
+		RequestParams params = new RequestParams();
+		params.put("id", twitterId);
+		// define request method and make a call to the client
+		client.post(apiUrl, params, handler);
+	}
+
 }
