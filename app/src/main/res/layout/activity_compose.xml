@@ -19,7 +19,8 @@
         android:maxLength="280"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:autoLink="all"/>
 
     <Button
         android:id="@+id/btnPost"
