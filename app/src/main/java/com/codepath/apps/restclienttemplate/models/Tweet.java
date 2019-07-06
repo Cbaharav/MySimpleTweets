@@ -18,6 +18,7 @@ public class Tweet {
     public long uid; // database ID for the tweet
     public User user;
     public String createdAt;
+    public static boolean liked;
 
     public Tweet() {}
 
@@ -30,6 +31,7 @@ public class Tweet {
         tweet.uid = jsonObject.getLong("id");
         tweet.createdAt = jsonObject.getString("created_at");
         tweet.user = User.fromJSON(jsonObject.getJSONObject("user"));
+        tweet.liked = false;
         return tweet;
     }
 
