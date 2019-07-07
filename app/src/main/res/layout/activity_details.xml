@@ -9,9 +9,7 @@
     android:background="#0020A7FF"
     android:onClick="onClick">
 
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="150dp"
@@ -110,7 +108,7 @@
             android:layout_height="32dp"
             android:layout_marginStart="8dp"
             android:background="@null"
-            app:layout_constraintStart_toEndOf="@+id/btnLike"
+            app:layout_constraintStart_toEndOf="@+id/tvLikeCount"
             app:layout_constraintTop_toBottomOf="@+id/tvBody"
             app:srcCompat="@drawable/ic_vector_retweet_stroke" />
 
@@ -120,10 +118,34 @@
             android:layout_height="33dp"
             android:layout_marginStart="8dp"
             android:background="@null"
-            app:layout_constraintStart_toEndOf="@+id/btnRetweet"
+            android:onClick="onReply"
+            app:layout_constraintStart_toEndOf="@+id/tvRTCount"
             app:layout_constraintTop_toBottomOf="@+id/tvBody"
-            app:srcCompat="@drawable/reply_big"
-            android:onClick="onReply"/>
+            app:srcCompat="@drawable/reply_big" />
+
+        <TextView
+            android:id="@+id/tvLikeCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="TextView"
+            android:textSize="16dp"
+            app:layout_constraintStart_toEndOf="@+id/btnLike"
+            app:layout_constraintTop_toTopOf="@+id/btnRetweet"
+            android:background="@android:color/white"
+            android:textColor="@android:color/black"/>
+
+        <TextView
+            android:id="@+id/tvRTCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="TextView"
+            android:textSize="16dp"
+            app:layout_constraintStart_toEndOf="@+id/btnRetweet"
+            app:layout_constraintTop_toTopOf="@+id/btnReply"
+            android:background="@android:color/white"
+            android:textColor="@android:color/black"/>
 
     </android.support.constraint.ConstraintLayout>
 </android.support.constraint.ConstraintLayout>

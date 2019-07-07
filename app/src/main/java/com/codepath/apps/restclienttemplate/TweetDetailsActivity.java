@@ -30,6 +30,8 @@ public class TweetDetailsActivity extends AppCompatActivity {
     public ImageButton btnLike;
     public ImageButton btnRetweet;
     public ImageButton btnReply;
+    public TextView tvLikeCount;
+    public TextView tvRTCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,12 +49,16 @@ public class TweetDetailsActivity extends AppCompatActivity {
         btnLike = (ImageButton) findViewById(R.id.btnLike);
         btnReply = (ImageButton) findViewById(R.id.btnReply);
         btnRetweet = (ImageButton) findViewById(R.id.btnRetweet);
+        tvLikeCount = (TextView) findViewById(R.id.tvLikeCount);
+        tvRTCount = (TextView) findViewById(R.id.tvRTCount);
 
         // populate the views according to position
         tvUsername.setText(tweet.user.name);
         tvBody.setText(tweet.body);
         tvTime.setText(tweet.getRelativeTimeAgo(tweet.createdAt));
         tvHandle.setText("@" + tweet.user.screenName);
+        tvLikeCount.setText(Integer.toString(tweet.like_count));
+        tvRTCount.setText(Integer.toString(tweet.retweet_count));
 
         // load user images
         Glide.with(this)
@@ -83,10 +89,14 @@ public class TweetDetailsActivity extends AppCompatActivity {
                     btnLike.setImageResource(R.drawable.ic_vector_heart);
                     tweet.liked = true;
                     btnLike.setColorFilter(Color.RED);
+                    // manually incremeneting like count
+                    tvLikeCount.setText(Integer.toString(Integer.parseInt(tvLikeCount.getText().toString()) + 1));
                 } else {
                     btnLike.setImageResource(R.drawable.ic_vector_heart_stroke);
                     btnLike.setColorFilter(Color.BLACK);
                     tweet.liked = false;
+                    // manually decrementing like count
+                    tvLikeCount.setText(Integer.toString(Integer.parseInt(tvLikeCount.getText().toString()) - 1));
                 }
             }
 
