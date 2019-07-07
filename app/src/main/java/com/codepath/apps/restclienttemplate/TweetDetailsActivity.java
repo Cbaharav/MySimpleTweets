@@ -65,11 +65,19 @@ public class TweetDetailsActivity extends AppCompatActivity {
                 .load(tweet.user.profileImageUrl)
                 .into(ivProfileImage);
 
+
+        // presetting the favorite and retweet icons to correct status
         if(tweet.liked) {
             btnLike.setImageResource(R.drawable.ic_vector_heart);
             btnLike.setColorFilter(Color.RED);
         } else {
             btnLike.setImageResource(R.drawable.ic_vector_heart_stroke);
+        }
+
+        if(tweet.retweeted) {
+            btnRetweet.setColorFilter(Color.GREEN);
+        } else {
+            btnRetweet.setColorFilter(Color.BLACK);
         }
     }
 
@@ -77,14 +85,15 @@ public class TweetDetailsActivity extends AppCompatActivity {
         finish();
     }
 
+    // when the like button is pressed
     public void onLike(View v) {
-        // make api call when etReply button is pressed
         // instantiating client with this context
         client = TwitterApp.getRestClient(this);
-        // call sendTweet from TwitterClient
+        // call likeTweet from TwitterClient
         client.likeTweet(tweet.liked, tweet.uid, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // changing the heart image and count depending on the action
                 if (!tweet.liked) {
                     btnLike.setImageResource(R.drawable.ic_vector_heart);
                     tweet.liked = true;
@@ -107,6 +116,7 @@ public class TweetDetailsActivity extends AppCompatActivity {
         });
     }
 
+    // when the comment button is pressed
     public void onReply(View v) {
         // create intent for the new activity
         Intent i = new Intent(this, ReplyActivity.class);
@@ -114,5 +124,34 @@ public class TweetDetailsActivity extends AppCompatActivity {
         i.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
         // start activity
         this.startActivity(i);
+    }
+
+    // when the retweet button is pressed
+    public void onRT(View v) {
+        // instantiating client with this context
+        client = TwitterApp.getRestClient(this);
+        // call likeTweet from TwitterClient
+        client.rtTweet(tweet.retweeted, tweet.uid, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                // changing the heart image and count depending on the action
+                if (!tweet.retweeted) {
+                    tweet.retweeted = true;
+                    btnRetweet.setColorFilter(Color.GREEN);
+                    // manually incremeneting retweet count
+                    tvRTCount.setText(Integer.toString(Integer.parseInt(tvRTCount.getText().toString()) + 1));
+                } else {
+                    btnRetweet.setColorFilter(Color.BLACK);
+                    tweet.retweeted = false;
+                    // manually decrementing retweet count
+                    tvRTCount.setText(Integer.toString(Integer.parseInt(tvRTCount.getText().toString()) - 1));
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+        });
     }
 }

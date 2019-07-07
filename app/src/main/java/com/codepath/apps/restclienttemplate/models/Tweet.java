@@ -21,6 +21,7 @@ public class Tweet {
     public boolean liked;
     public int like_count;
     public int retweet_count;
+    public boolean retweeted;
 
     public Tweet() {}
 
@@ -36,6 +37,7 @@ public class Tweet {
         tweet.liked = jsonObject.getBoolean("favorited");
         tweet.like_count = jsonObject.getInt("favorite_count");
         tweet.retweet_count = jsonObject.getInt("retweet_count");
+        tweet.retweeted = jsonObject.getBoolean("retweeted");
         return tweet;
     }
 
