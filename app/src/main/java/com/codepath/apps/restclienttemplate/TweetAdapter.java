@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +60,11 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
                 .apply(RequestOptions.circleCropTransform())
                 .into(viewHolder.ivProfileImage);
 
+        // load embedded media
+        Glide.with(context)
+                .load(tweet.media)
+                .into(viewHolder.ivMedia);
+
         viewHolder.ivReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,6 +92,7 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
         public TextView tvTime;
         public TextView tvHandle;
         public ImageButton ivReply;
+        public ImageView ivMedia;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -99,13 +104,13 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder> 
             tvTime = (TextView) itemView.findViewById(R.id.tvTime);
             tvHandle = (TextView) itemView.findViewById(R.id.tvHandle);
             ivReply = (ImageButton) itemView.findViewById(R.id.ivReply);
+            ivMedia = (ImageView) itemView.findViewById(R.id.ivMedia);
             itemView.setOnClickListener(this);
         }
 
         //when user clicks on a row, show MovieDetailsActivity for the selected movie
         @Override
         public void onClick(View v) {
-            Log.d("Carmel", "item clicked");
             //gets item position
             int position = getAdapterPosition();
             //make sure position is valid, actually exists in the view
