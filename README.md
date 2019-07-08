@@ -54,6 +54,7 @@ Here's a walkthrough of implemented user stories:
 <img src='https://github.com/Cbaharav/MySimpleTweets/blob/master/Walkthrough_tweets.gif' />
 
 Here are a few additional features implemented later:
+
 <img src='https://github.com/Cbaharav/MySimpleTweets/blob/master/Walkthrough_tweets2.gif' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
