@@ -176,15 +176,6 @@ public class TimelineActivity extends AppCompatActivity {
         });
     }
 
-//    // can be used to change the color of menu icons
-//    public static void tintMenuIcon(Context context, MenuItem item, @ColorRes int color) {
-//        Drawable normalDrawable = item.getIcon();
-//        Drawable wrapDrawable = DrawableCompat.wrap(normalDrawable);
-//        DrawableCompat.setTint(wrapDrawable, context.getResources().getColor(color));
-//
-//        item.setIcon(wrapDrawable);
-//    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // inflate the menu; this adds items to the action bar if it is present
@@ -194,12 +185,6 @@ public class TimelineActivity extends AppCompatActivity {
         miActionProgressItem = menu.findItem(R.id.miActionProgress);
         // extract the action-view from the menu item
         ProgressBar v = (ProgressBar) MenuItemCompat.getActionView(miActionProgressItem);
-
-//        // changing compose action to white
-//        MenuItem menuItem = menu.findItem(R.id.miCompose);
-//        if (menuItem != null) {
-//            tintMenuIcon(TimelineActivity.this, menuItem, android.R.color.white);
-//        }
         return super.onCreateOptionsMenu(menu);
     }
 
